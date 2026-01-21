@@ -9,12 +9,59 @@ class BukuController extends Controller
 {
     public function index()
     {
-        $bukus = Buku::all(); // Mengambil semua data buku
+        $bukus = Buku::all();
         return view('buku.index', compact('bukus'));
     }
 
     public function create()
     {
         return view('buku.create');
+    }
+
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'judul' => 'required|string|max:255',
+            'penulis' => 'required|string|max:255',
+            'penerbit' => 'nullable|string|max:255',
+            'tahun_terbit' => 'required|integer',
+            'stok' => 'required|integer|min:0',
+        ]);
+
+        Buku::create($validated);
+
+        return redirect()->route('buku.index')
+            ->with('success', 'Buku berhasil ditambahkan.');
+    }
+
+    // Menampilkan halaman form edit
+    public function edit(Buku $buku)
+    {
+        return view('buku.edit', compact('buku'));
+    }
+
+    // Memproses perubahan data ke database
+    public function update(Request $request, Buku $buku)
+    {
+        $request->validate([
+            'judul' => 'required',
+            'penulis' => 'required',
+            'penerbit' => 'required',
+            'tahun_terbit' => 'required|integer',
+            'stok' => 'required|integer',
+        ]);
+
+        $buku->update($request->all());
+
+        return redirect()->route('buku.index')
+            ->with('success', 'Data buku "' . $buku->judul . '" berhasil diperbarui!');
+    }
+
+    public function destroy(Buku $buku)
+    {
+        $buku->delete();
+
+        return redirect()->route('buku.index')
+            ->with('success', 'Buku "' . $buku->judul . '" berhasil dihapus.');
     }
 }
