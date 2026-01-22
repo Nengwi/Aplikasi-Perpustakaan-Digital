@@ -7,11 +7,17 @@ use Illuminate\Http\Request;
 
 class BukuController extends Controller
 {
-    public function index()
-    {
-        $bukus = Buku::all();
-        return view('buku.index', compact('bukus'));
-    }
+   public function index(Request $request)
+{
+    $search = $request->get('search');
+
+    $bukus = Buku::when($search, function ($query) use ($search) {
+        return $query->where('judul', 'like', "%{$search}%")
+                     ->orWhere('penulis', 'like', "%{$search}%");
+    })->get();
+
+    return view('buku.index', compact('bukus'));
+}
 
     public function create()
     {
