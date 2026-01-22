@@ -27,28 +27,28 @@
         </div>
     @endif
 
-    <div class="mb-6">
-        <form action="{{ route('buku.index') }}" method="GET" class="flex items-center space-x-3">
-            <div class="relative w-full md:w-1/3">
+    <div class="flex justify-end mb-6">
+        <form action="{{ route('buku.index') }}" method="GET" class="flex items-center space-x-2 w-full md:w-1/3">
+            <div class="relative flex-grow">
                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="h-4 w-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                     </svg>
                 </div>
                 <input type="text" name="search" value="{{ request('search') }}"
-                    class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-xl leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition"
+                    class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-xl leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition duration-150"
                     placeholder="Cari judul atau penulis...">
             </div>
 
             <button type="submit" style="background-color: #2563eb; color: white !important;"
-                class="inline-flex items-center px-6 py-2 border border-transparent rounded-md font-bold text-xs text-white uppercase tracking-widest hover:bg-blue-700 shadow-sm transition">
+                class="inline-flex items-center px-6 py-2 rounded-xl font-bold text-xs uppercase tracking-widest hover:bg-blue-700 shadow-sm transition">
                 Cari
             </button>
 
             @if (request('search'))
                 <a href="{{ route('buku.index') }}" style="background-color: #dc2626; color: white !important;"
-                    class="inline-flex items-center px-6 py-2 border border-transparent rounded-md font-bold text-xs text-white uppercase tracking-widest hover:bg-red-700 shadow-sm transition">
+                    class="inline-flex items-center px-6 py-2 rounded-xl font-bold text-xs uppercase tracking-widest hover:bg-red-700 shadow-sm transition">
                     Reset
                 </a>
             @endif
