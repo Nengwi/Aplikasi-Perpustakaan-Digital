@@ -29,8 +29,8 @@ public function store(Request $request)
         'alamat' => 'required',
         'nomor_telepon' => 'required',
     ]);
+    Anggota::create($request->only(['nama', 'nim', 'alamat', 'nomor_telepon']));
 
-    Anggota::create($request->all());
     return redirect()->route('anggota.index')->with('success', 'Anggota berhasil didaftarkan!');
 }
 
@@ -45,24 +45,36 @@ public function store(Request $request)
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
-    {
-        //
-    }
+    public function edit(Anggota $anggota)
+{
+    // Membuka halaman edit dengan membawa data anggota yang dipilih
+    return view('anggota.edit', compact('anggota'));
+}
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
+public function update(Request $request, Anggota $anggota)
+{
+    // Validasi data
+    $request->validate([
+        'nama' => 'required',
+        'nim' => 'required|unique:anggotas,nim,'.$anggota->id,
+        'nomor_telepon' => 'required',
+        'alamat' => 'required',
+    ]);
 
+    // Simpan perubahan
+    $anggota->update($request->all());
+
+    return redirect()->route('anggota.index')->with('success', 'Data anggota berhasil diperbarui!');
+}
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
-    {
-        //
-    }
+    public function destroy(Anggota $anggota)
+{
+    // Menghapus data anggota
+    $anggota->delete();
+
+    // Kembali ke halaman index dengan pesan sukses
+    return redirect()->route('anggota.index')->with('success', 'Anggota berhasil dihapus!');
+}
 }
