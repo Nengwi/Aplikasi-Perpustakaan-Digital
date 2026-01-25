@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\BukuController;
+use App\Http\Controllers\AnggotaController; // JANGAN LUPA BARIS INI!
 
 Route::get('/', function () {
     return view('welcome');
@@ -16,7 +17,14 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    // Pakai resource agar semua route (index, create, edit, update, dll) langsung aktif
     Route::resource('buku', BukuController::class);
+    
+    // Pakai resource untuk anggota dan paksa parameternya agar tidak jadi 'anggotum'
+    Route::resource('anggota', AnggotaController::class)->parameters([
+        'anggota' => 'anggota'
+    ]);
 });
 
 require __DIR__.'/auth.php';
