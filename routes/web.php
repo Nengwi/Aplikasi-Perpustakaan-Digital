@@ -22,7 +22,7 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    // KHUSUS ADMIN (Sesuai Screenshot: CRUD Buku & Anggota)
+    // KHUSUS ADMIN
     Route::middleware(['role:admin'])->group(function () {
         Route::resource('buku', BukuController::class);
         Route::resource('anggota', AnggotaController::class)->parameters([
@@ -30,13 +30,16 @@ Route::middleware('auth')->group(function () {
         ]);
     });
 
-    // KHUSUS USER (Sesuai Screenshot: Peminjaman & Pengembalian)
+    // KHUSUS USER (Sudah digabung jadi satu group saja)
     Route::middleware(['role:user'])->group(function () {
-        // Halaman di mana user bisa lihat daftar buku untuk dipinjam
+        // Daftar buku untuk dipinjam
         Route::get('/pinjam-buku', [BukuController::class, 'indexUser'])->name('peminjaman.index');
         
         // Simpan transaksi peminjaman
         Route::post('/pinjam-buku/{id}', [PeminjamanController::class, 'store'])->name('peminjaman.store');
+        
+        // Halaman Riwayat Pinjam
+        Route::get('/riwayat-pinjam', [PeminjamanController::class, 'riwayat'])->name('peminjaman.riwayat');
     });
 });
 
