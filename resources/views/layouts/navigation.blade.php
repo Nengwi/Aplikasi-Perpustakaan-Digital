@@ -13,13 +13,20 @@
                         {{ __('Dashboard') }}
                     </x-nav-link>
 
-                    <x-nav-link :href="route('buku.index')" :active="request()->routeIs('buku.*')">
-                        {{ __('Buku') }}
-                    </x-nav-link>
+                    @if(Auth::user()->role == 'admin')
+                        <x-nav-link :href="route('buku.index')" :active="request()->routeIs('buku.*')">
+                            {{ __('Kelola Buku') }}
+                        </x-nav-link>
+                        <x-nav-link :href="route('anggota.index')" :active="request()->routeIs('anggota.*')">
+                            {{ __('Kelola Anggota') }}
+                        </x-nav-link>
+                    @endif
 
-                    <x-nav-link :href="route('anggota.index')" :active="request()->routeIs('anggota.*')">
-                        {{ __('Anggota') }}
-                    </x-nav-link>
+                    @if(Auth::user()->role == 'user')
+                        <x-nav-link :href="route('peminjaman.index')" :active="request()->routeIs('peminjaman.*')">
+                            {{ __('Daftar Buku') }}
+                        </x-nav-link>
+                    @endif
                 </div>
             </div>
 
@@ -27,7 +34,7 @@
                 <x-dropdown align="right" width="48">
                     <x-slot name="trigger">
                         <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
-                            <div>{{ Auth::user()->name }}</div>
+                            <div>{{ Auth::user()->name }} ({{ strtoupper(Auth::user()->role) }})</div>
                             <div class="ms-1">
                                 <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
                                     <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
@@ -60,12 +67,22 @@
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
         <div class="pt-2 pb-3 space-y-1">
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">{{ __('Dashboard') }}</x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('buku.index')" :active="request()->routeIs('buku.*')">{{ __('Buku') }}</x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('anggota.index')" :active="request()->routeIs('anggota.*')">{{ __('Anggota') }}</x-responsive-nav-link>
+
+            @if(Auth::user()->role == 'admin')
+                <x-responsive-nav-link :href="route('buku.index')" :active="request()->routeIs('buku.*')">{{ __('Kelola Buku') }}</x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('anggota.index')" :active="request()->routeIs('anggota.*')">{{ __('Kelola Anggota') }}</x-responsive-nav-link>
+            @endif
+
+            @if(Auth::user()->role == 'user')
+                <x-responsive-nav-link :href="route('peminjaman.index')" :active="request()->routeIs('peminjaman.*')">{{ __('Daftar Buku') }}</x-responsive-nav-link>
+            @endif
         </div>
 
         <div class="pt-4 pb-1 border-t border-gray-200">
-            <div class="px-4 text-base font-medium text-gray-800">{{ Auth::user()->name }}</div>
+            <div class="px-4">
+                <div class="text-base font-medium text-gray-800">{{ Auth::user()->name }}</div>
+                <div class="text-sm font-medium text-gray-500 italic">{{ strtoupper(Auth::user()->role) }}</div>
+            </div>
             <div class="mt-3 space-y-1">
                 <x-responsive-nav-link :href="route('profile.edit')">{{ __('Profile') }}</x-responsive-nav-link>
                 <form method="POST" action="{{ route('logout') }}">
