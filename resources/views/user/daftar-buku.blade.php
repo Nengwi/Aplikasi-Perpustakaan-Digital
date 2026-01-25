@@ -8,9 +8,28 @@
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
 
-            <div style="margin-bottom: 20px; display: flex; justify-content: flex-end;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; gap: 15px;">
+                
+                <form action="{{ route('peminjaman.index') }}" method="GET" style="display: flex; gap: 5px; flex-basis: 400px;">
+                    <input type="text" name="search" placeholder="Cari judul atau penulis..." 
+                           value="{{ request('search') }}"
+                           style="width: 100%; padding: 8px 12px; border: 1px solid #d1d5db; border-radius: 6px; outline: none; font-size: 13px;">
+                    
+                    <button type="submit" 
+                            style="background-color: #2563eb; color: white; padding: 8px 15px; border-radius: 6px; font-weight: bold; border: none; cursor: pointer; font-size: 12px;">
+                        CARI
+                    </button>
+
+                    @if(request('search'))
+                        <a href="{{ route('peminjaman.index') }}" 
+                           style="background-color: #9ca3af; color: white; padding: 8px 12px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 12px; display: flex; align-items: center;">
+                           RESET
+                        </a>
+                    @endif
+                </form>
+
                 <a href="{{ route('peminjaman.riwayat') }}" 
-                   style="background-color: #1e293b; color: white; padding: 10px 20px; border-radius: 8px; text-decoration: none; font-weight: bold; font-size: 13px;">
+                   style="background-color: #1e293b; color: white; padding: 10px 20px; border-radius: 8px; text-decoration: none; font-weight: bold; font-size: 13px; white-space: nowrap;">
                    Lihat Riwayat Pinjam →
                 </a>
             </div>
