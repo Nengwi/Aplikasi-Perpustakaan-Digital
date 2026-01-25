@@ -16,4 +16,16 @@ class Peminjaman extends Model
         'tanggal_kembali',
         'status'
     ];
+
+    // Relasi ke Buku (Sudah kamu buat, ini sudah benar)
+    public function buku()
+    {
+        return $this->belongsTo(Buku::class, 'buku_id');
+    }
+
+    // Tambahan: Relasi ke User (Agar tahu siapa yang pinjam)
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
 }
