@@ -19,7 +19,6 @@ class PeminjamanController extends Controller
         }
 
         // Simpan data peminjaman
-        // Catatan: Pastikan kamu sudah membuat model Peminjaman sebelumnya
         Peminjaman::create([
             'user_id' => Auth::id(),
             'buku_id' => $buku->id,
@@ -32,4 +31,15 @@ class PeminjamanController extends Controller
 
         return redirect()->route('peminjaman.index')->with('success', 'Buku "' . $buku->judul . '" berhasil dipinjam!');
     }
+
+    public function riwayat()
+{
+    // Mengambil data peminjaman milik user yang login saja
+    // 'buku' adalah nama relasi yang akan kita buat di Model sebentar lagi
+    $riwayat = Peminjaman::with('buku')
+                ->where('user_id', Auth::id())
+                ->get();
+
+    return view('user.riwayat', compact('riwayat'));
+}
 }
