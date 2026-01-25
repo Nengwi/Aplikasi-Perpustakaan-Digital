@@ -20,16 +20,19 @@ class BukuController extends Controller
     } // <-- Tambahkan kurung tutup di sini
 
     // Pindahkan indexUser ke luar agar berdiri sendiri
-    public function indexUser()
-    {
-        $bukus = Buku::all();
-        return view('user.daftar-buku', compact('bukus'));
-    }
+   public function indexUser(Request $request)
+{
+    // Mengambil kata kunci dari input bernama 'search'
+    $search = $request->input('search');
 
-    public function create()
-    {
-        return view('buku.create');
-    }
+    $bukus = Buku::when($search, function ($query, $search) {
+            return $query->where('judul', 'like', "%{$search}%")
+                         ->orWhere('penulis', 'like', "%{$search}%");
+        })
+        ->get();
+
+    return view('user.daftar-buku', compact('bukus'));
+}
 
     public function store(Request $request)
     {
