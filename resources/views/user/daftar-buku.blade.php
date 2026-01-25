@@ -30,21 +30,20 @@
                 {{ $buku->stok }} eks
             </td>
             <td class="px-6 py-4 border border-gray-300">
-                <div class="flex justify-center items-center">
-                    @if($buku->stok > 0)
-                        <form action="{{ route('peminjaman.store', $buku->id) }}" method="POST">
-                            @csrf
-                            <button type="submit" 
-                                    style="background-color: #2563eb !important; color: white !important;" 
-                                    class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-md text-xs uppercase tracking-widest shadow-md transition-all active:scale-95">
-                                PINJAM
-                            </button>
-                        </form>
-                    @else
-                        <span class="text-red-500 font-bold text-xs uppercase italic">Stok Habis</span>
-                    @endif
-                </div>
-            </td>
+    <div style="display: flex; justify-content: center; align-items: center; width: 100%;">
+        @if($buku->stok > 0)
+            <form action="{{ route('peminjaman.store', $buku->id) }}" method="POST" style="margin: 0;">
+                @csrf
+                <button type="submit" 
+                        style="background-color: #2563eb !important; color: white !important; font-weight: bold; padding: 8px 24px; border-radius: 6px; border: none; cursor: pointer; text-transform: uppercase; font-size: 12px; transition: 0.3s;">
+                    Pinjam
+                </button>
+            </form>
+        @else
+            <span style="color: #dc2626; font-weight: bold; text-transform: uppercase; font-size: 12px;">Habis</span>
+        @endif
+    </div>
+</td>
         </tr>
         @endforeach
     </tbody>
