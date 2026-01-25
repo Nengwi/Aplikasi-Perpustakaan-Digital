@@ -1,0 +1,51 @@
+<x-app-layout>
+    <x-slot name="header">
+        <h2 class="font-semibold text-base text-gray-800 leading-tight uppercase tracking-wide">
+            {{ __('Daftar Buku Tersedia') }}
+        </h2>
+    </x-slot>
+
+    <div class="mt-4">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <div class="bg-white overflow-hidden shadow-sm border border-gray-300 sm:rounded-lg">
+                <table class="w-full border-collapse border border-gray-300">
+                    <thead>
+                        <tr class="bg-gray-200 border-b-2 border-gray-300">
+                            <th class="px-6 py-4 text-center text-xs font-black text-gray-700 uppercase border border-gray-300">JUDUL BUKU</th>
+                            <th class="px-6 py-4 text-center text-xs font-black text-gray-700 uppercase border border-gray-300">PENULIS</th>
+                            <th class="px-6 py-4 text-center text-xs font-black text-gray-700 uppercase border border-gray-300">STOK</th>
+                            <th class="px-6 py-4 text-center text-xs font-black text-gray-700 uppercase border border-gray-300">AKSI</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($bukus as $buku)
+                        <tr class="hover:bg-gray-50 transition duration-150">
+                            <td class="px-6 py-4 text-sm font-bold text-gray-900 border border-gray-300 text-center uppercase">
+                                {{ $buku->judul }}
+                            </td>
+                            <td class="px-6 py-4 text-sm text-gray-600 border border-gray-300 text-center">
+                                {{ $buku->penulis }}
+                            </td>
+                            <td class="px-6 py-4 text-sm text-gray-600 border border-gray-300 text-center">
+                                {{ $buku->stok }} eks
+                            </td>
+                            <td class="px-6 py-4 text-center text-sm border border-gray-300">
+                                @if($buku->stok > 0)
+                                    <form action="{{ route('peminjaman.store', $buku->id) }}" method="POST">
+                                        @csrf
+                                        <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-1 px-4 rounded-md text-xs uppercase tracking-widest transition">
+                                            PINJAM
+                                        </button>
+                                    </form>
+                                @else
+                                    <span class="text-red-500 font-bold text-xs italic uppercase">Stok Habis</span>
+                                @endif
+                            </td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</x-app-layout>
