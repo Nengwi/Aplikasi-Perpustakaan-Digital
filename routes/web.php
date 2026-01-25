@@ -3,7 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\BukuController;
-use App\Http\Controllers\AnggotaController; 
+use App\Http\Controllers\AnggotaController;
 use App\Http\Controllers\PeminjamanController;
 
 Route::get('/', function () {
@@ -16,7 +16,7 @@ Route::get('/dashboard', function () {
 
 // Group Middleware untuk SEMUA yang sudah Login
 Route::middleware('auth')->group(function () {
-    
+
     // Profile (Bisa diakses Admin maupun User)
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -34,13 +34,15 @@ Route::middleware('auth')->group(function () {
     Route::middleware(['role:user'])->group(function () {
         // Daftar buku untuk dipinjam
         Route::get('/pinjam-buku', [BukuController::class, 'indexUser'])->name('peminjaman.index');
-        
+
         // Simpan transaksi peminjaman
         Route::post('/pinjam-buku/{id}', [PeminjamanController::class, 'store'])->name('peminjaman.store');
-        
+
         // Halaman Riwayat Pinjam
         Route::get('/riwayat-pinjam', [PeminjamanController::class, 'riwayat'])->name('peminjaman.riwayat');
+        // Tambahkan di dalam grup role:user
+        Route::patch('/kembali-buku/{id}', [PeminjamanController::class, 'kembali'])->name('peminjaman.kembali');
     });
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
