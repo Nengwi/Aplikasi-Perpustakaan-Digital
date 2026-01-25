@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\BukuController;
 use App\Http\Controllers\AnggotaController; 
+use App\Http\Controllers\PeminjamanController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -31,8 +32,11 @@ Route::middleware('auth')->group(function () {
 
     // KHUSUS USER (Sesuai Screenshot: Peminjaman & Pengembalian)
     Route::middleware(['role:user'])->group(function () {
-        // Nanti kita isi route Peminjaman di sini
-        // Route::resource('peminjaman', PeminjamanController::class);
+        // Halaman di mana user bisa lihat daftar buku untuk dipinjam
+        Route::get('/pinjam-buku', [BukuController::class, 'indexUser'])->name('peminjaman.index');
+        
+        // Simpan transaksi peminjaman
+        Route::post('/pinjam-buku/{id}', [PeminjamanController::class, 'store'])->name('peminjaman.store');
     });
 });
 
