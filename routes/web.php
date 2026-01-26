@@ -5,7 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\BukuController;
 use App\Http\Controllers\AnggotaController;
 use App\Http\Controllers\PeminjamanController;
-use App\Http\Controllers\AdminController; 
+use App\Http\Controllers\AdminController;
 use Illuminate\Support\Facades\Auth;
 
 Route::get('/', function () {
@@ -21,7 +21,7 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
-    
+
     // Profile (Bisa diakses semua role)
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -31,7 +31,7 @@ Route::middleware('auth')->group(function () {
     Route::middleware(['role:admin'])->group(function () {
         // Route Dashboard khusus Admin
         Route::get('/admin/dashboard', [AdminController::class, 'index'])->name('admin.dashboard');
-        
+
         Route::resource('buku', BukuController::class);
         Route::resource('anggota', AnggotaController::class)->parameters([
             'anggota' => 'anggota'
@@ -45,6 +45,13 @@ Route::middleware('auth')->group(function () {
         Route::get('/riwayat-pinjam', [PeminjamanController::class, 'riwayat'])->name('peminjaman.riwayat');
         Route::patch('/kembali-buku/{id}', [PeminjamanController::class, 'kembali'])->name('peminjaman.kembali');
     });
+    Route::middleware(['auth', 'role:user'])->group(function () {
+    // Jalur untuk halaman Jelajahi
+    Route::get('/jelajahi', [App\Http\Controllers\PeminjamanController::class, 'indexUser'])->name('peminjaman.index');
+    
+    // Jalur untuk proses meminjam (POST)
+    Route::post('/pinjam/{id}', [App\Http\Controllers\PeminjamanController::class, 'store'])->name('peminjaman.store');
+});
 });
 
 require __DIR__ . '/auth.php';
