@@ -5,42 +5,44 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\BukuController;
 use App\Http\Controllers\AnggotaController;
 use App\Http\Controllers\PeminjamanController;
+use App\Http\Controllers\AdminController; 
+use Illuminate\Support\Facades\Auth;
 
 Route::get('/', function () {
     return view('welcome');
 });
 
+// LOGIKA REDIRECT DASHBOARD (Pemisah Admin & User)
 Route::get('/dashboard', function () {
-    return view('dashboard');
+    if (Auth::user()->role == 'admin') {
+        return redirect()->route('admin.dashboard');
+    }
+    return view('dashboard'); // Mengarah ke resources/views/dashboard.blade.php
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-// Group Middleware untuk SEMUA yang sudah Login
 Route::middleware('auth')->group(function () {
-
-    // Profile (Bisa diakses Admin maupun User)
+    
+    // Profile (Bisa diakses semua role)
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     // KHUSUS ADMIN
     Route::middleware(['role:admin'])->group(function () {
+        // Route Dashboard khusus Admin
+        Route::get('/admin/dashboard', [AdminController::class, 'index'])->name('admin.dashboard');
+        
         Route::resource('buku', BukuController::class);
         Route::resource('anggota', AnggotaController::class)->parameters([
             'anggota' => 'anggota'
         ]);
     });
 
-    // KHUSUS USER (Sudah digabung jadi satu group saja)
+    // KHUSUS USER
     Route::middleware(['role:user'])->group(function () {
-        // Daftar buku untuk dipinjam
         Route::get('/pinjam-buku', [BukuController::class, 'indexUser'])->name('peminjaman.index');
-
-        // Simpan transaksi peminjaman
         Route::post('/pinjam-buku/{id}', [PeminjamanController::class, 'store'])->name('peminjaman.store');
-
-        // Halaman Riwayat Pinjam
         Route::get('/riwayat-pinjam', [PeminjamanController::class, 'riwayat'])->name('peminjaman.riwayat');
-        // Tambahkan di dalam grup role:user
         Route::patch('/kembali-buku/{id}', [PeminjamanController::class, 'kembali'])->name('peminjaman.kembali');
     });
 });
