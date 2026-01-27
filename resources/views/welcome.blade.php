@@ -4,10 +4,10 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>PerpusDigital</title>
+    <title>{{ config('app.name', 'PerpusDigital') }}</title>
 
     <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=figtree:400,600,800,900&display=swap" rel="stylesheet" />
+    <link href="https://fonts.bunny.net/css?family=figtree:400,600,700,800,900&display=swap" rel="stylesheet" />
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
@@ -20,7 +20,7 @@
             overflow: hidden;
         }
 
-        /* Full Background Image Perpustakaan */
+        /* Full Background Image dengan Overlay Gelap */
         .hero-wrapper {
             background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
                 url('https://png.pngtree.com/background/20250104/original/pngtree-cartoon-library-interior-with-bookshelves-and-open-book-on-table-picture-image_15776753.jpg');
@@ -77,12 +77,12 @@
             max-width: 800px;
         }
 
-        /* Style Khusus Selamat Datang */
-        .welcome-text {
+        /* Label Selamat Datang Ungu */
+        .welcome-label {
             display: block;
             font-size: 1.5rem;
             font-weight: 800;
-            color: #a855f7; /* Warna Ungu Cerah */
+            color: #a855f7; /* Ungu Cerah */
             text-transform: uppercase;
             letter-spacing: 4px;
             margin-bottom: 10px;
@@ -96,7 +96,6 @@
             margin-top: 0;
             margin-bottom: 20px;
             text-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-            color: white;
         }
 
         .hero-text p {
@@ -119,6 +118,7 @@
             font-weight: 800;
             transition: 0.3s;
             display: inline-block;
+            text-align: center;
         }
 
         .btn-primary {
@@ -151,18 +151,22 @@
             <nav>
                 <div class="logo">PerpusDigital</div>
                 <div class="nav-links">
-                    @auth
-                        <a href="{{ url('/dashboard') }}">Dashboard</a>
-                    @else
-                        <a href="{{ route('login') }}">Masuk</a>
-                        <a href="{{ route('register') }}" style="background: white; color: #4f46e5;">Daftar</a>
-                    @endauth
+                    @if (Route::has('login'))
+                        @auth
+                            <a href="{{ url('/dashboard') }}">Dashboard</a>
+                        @else
+                            <a href="{{ route('login') }}">Masuk</a>
+                            @if (Route::has('register'))
+                                <a href="{{ route('register') }}" style="background: white; color: #4f46e5;">Daftar</a>
+                            @endif
+                        @endauth
+                    @endif
                 </div>
             </nav>
 
             <div class="hero-body">
                 <div class="hero-text">
-                    <span class="welcome-text">Selamat Datang</span>
+                    <span class="welcome-label">Selamat Datang</span>
                     
                     <h1>Pengetahuan Tak Terbatas <br>Ada di Sini</h1>
                     
@@ -170,11 +174,12 @@
 
                     <div class="btn-group">
                         <a href="{{ route('login') }}" class="btn btn-primary">MULAI MEMBACA</a>
-                        <a href="#" class="btn btn-outline">LIHAT KOLEKSI</a>
+                        <a href="{{ route('peminjaman.index') }}" class="btn btn-outline">LIHAT KOLEKSI</a>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </body>
+
 </html>
