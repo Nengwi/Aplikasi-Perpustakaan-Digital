@@ -1,5 +1,5 @@
 <?php
-
+    
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\BukuController;
@@ -9,8 +9,10 @@ use App\Http\Controllers\AdminController;
 use Illuminate\Support\Facades\Auth;
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('welcome'); // Pastikan ini mengarah ke welcome
 });
+
+// ... (route-route lainnya tetap seperti sebelumnya)
 
 // LOGIKA REDIRECT DASHBOARD
 Route::get('/dashboard', function () {
@@ -21,7 +23,6 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
-
     // Profile (Semua Role)
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
