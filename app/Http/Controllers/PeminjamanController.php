@@ -9,11 +9,17 @@ use Illuminate\Support\Facades\Auth;
 
 class PeminjamanController extends Controller
 {
-    public function indexUser()
+    // 1. GUNAKAN VERSI INI SAJA (Hapus indexUser yang lama)
+    public function indexUser(Request $request) 
     {
-        // Ambil semua buku untuk halaman "Jelajahi"
-        $bukus = Buku::all();
-        // Arahkan ke resources/views/peminjaman/index.blade.php
+        $search = $request->input('search');
+
+        $bukus = Buku::when($search, function ($query, $search) {
+            return $query->where('judul', 'like', "%{$search}%")
+                         ->orWhere('penerbit', 'like', "%{$search}%")
+                         ->orWhere('tahun_terbit', 'like', "%{$search}%");
+        })->get();
+
         return view('peminjaman.index', compact('bukus'));
     }
 
@@ -47,19 +53,16 @@ class PeminjamanController extends Controller
         // 4. KURANGI STOK
         $buku->decrement('stok');
 
-        // Pindahkan ke riwayat setelah berhasil pinjam
         return redirect()->route('peminjaman.riwayat')->with('success', 'Buku "' . $buku->judul . '" berhasil dipinjam!');
     }
 
     public function riwayat()
     {
-        // Ambil riwayat pinjam user yang sedang login
         $peminjamans = Peminjaman::with('buku')
             ->where('user_id', Auth::id())
             ->latest()
             ->get();
 
-        // Samakan variabel ($peminjamans) dengan yang dipanggil di @forelse di file Blade
         return view('peminjaman.riwayat', compact('peminjamans'));
     }
 
@@ -67,13 +70,11 @@ class PeminjamanController extends Controller
     {
         $peminjaman = Peminjaman::findOrFail($id);
 
-        // Update status & tanggal kembali
         $peminjaman->update([
             'status' => 'dikembalikan',
             'tanggal_kembali' => now()
         ]);
 
-        // Kembalikan stok bukunya
         $buku = Buku::find($peminjaman->buku_id);
         $buku->increment('stok');
 

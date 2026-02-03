@@ -7,33 +7,42 @@ use Illuminate\Http\Request;
 
 class BukuController extends Controller
 {
-    public function index(Request $request)
-    {
-        $search = $request->get('search');
-
-        $bukus = Buku::when($search, function ($query) use ($search) {
-            return $query->where('judul', 'like', "%{$search}%")
-                         ->orWhere('penulis', 'like', "%{$search}%");
-        })->get();
-
-        return view('buku.index', compact('bukus'));
-    } // <-- Tambahkan kurung tutup di sini
-
-    // Pindahkan indexUser ke luar agar berdiri sendiri
-   public function indexUser(Request $request)
+    // 1. Menampilkan daftar buku untuk Admin
+   public function index(Request $request)
 {
-    // Mengambil kata kunci dari input bernama 'search'
     $search = $request->input('search');
 
+    // Pastikan nama variabelnya $bukus (pake S) agar nyambung dengan Blade
     $bukus = Buku::when($search, function ($query, $search) {
-            return $query->where('judul', 'like', "%{$search}%")
-                         ->orWhere('penulis', 'like', "%{$search}%");
-        })
-        ->get();
+        return $query->where('judul', 'like', "%{$search}%")
+                     ->orWhere('penerbit', 'like', "%{$search}%")
+                     ->orWhere('penulis', 'like', "%{$search}%");
+    })->latest()->get(); // Atau ->paginate(10) kalau bukunya banyak
 
-    return view('user.daftar-buku', compact('bukus'));
+    // Kirim variabel $bukus ke view
+    return view('buku.index', compact('bukus'));
 }
+    // 2. MENAMPILKAN FORM TAMBAH BUKU (Ini yang tadi hilang)
+    public function create()
+    {
+        return view('buku.create');
+    }
 
+    // 3. Menampilkan daftar buku untuk User
+    public function indexUser(Request $request)
+    {
+        $search = $request->input('search');
+
+        $bukus = Buku::when($search, function ($query, $search) {
+                return $query->where('judul', 'like', "%{$search}%")
+                             ->orWhere('penulis', 'like', "%{$search}%");
+            })
+            ->get();
+
+        return view('user.daftar-buku', compact('bukus'));
+    }
+
+    // 4. Menyimpan data buku baru ke database
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -50,11 +59,13 @@ class BukuController extends Controller
             ->with('success', 'Buku berhasil ditambahkan.');
     }
 
+    // 5. Menampilkan form edit buku
     public function edit(Buku $buku)
     {
         return view('buku.edit', compact('buku'));
     }
 
+    // 6. Mengupdate data buku
     public function update(Request $request, Buku $buku)
     {
         $request->validate([
@@ -71,6 +82,7 @@ class BukuController extends Controller
             ->with('success', 'Data buku "' . $buku->judul . '" berhasil diperbarui!');
     }
 
+    // 7. Menghapus buku
     public function destroy(Buku $buku)
     {
         $buku->delete();

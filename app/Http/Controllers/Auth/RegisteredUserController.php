@@ -35,11 +35,16 @@ class RegisteredUserController extends Controller
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
+        // 1. Membuat User Baru
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
         ]);
+
+        // 2. MEMBERIKAN ROLE OTOMATIS (Sangat Penting!)
+        // Baris ini yang akan menghilangkan error 403 saat user baru mencoba akses fitur
+        $user->assignRole('user');
 
         event(new Registered($user));
 
